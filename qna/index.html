@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>질문 남기기 — 내 인생의 주인공 되는 법</title>
+<style>
+  :root {
+    /* 카드뉴스 아이덴티티: 아이보리 종이 + 네이비/코발트 (변수명은 기존 유지) */
+    --cream: #F6F3EB;
+    --sand: #EDE8DB;
+    --sand-deep: #DAD3C1;
+    --ink: #26303F;
+    --ink-soft: #67707F;
+    --teal: #2B5BD7;
+    --teal-deep: #17356B;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Pretendard Variable", Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  header { margin-bottom: 24px; }
+  header .eyebrow {
+    font-size: 13px; letter-spacing: .12em; font-weight: 700;
+    color: var(--teal-deep); margin-bottom: 6px;
+  }
+  header h1 { font-size: 24px; font-weight: 800; line-height: 1.35; }
+  header p { margin-top: 8px; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  form {
+    background: #fff; border: 1px solid var(--sand-deep); border-radius: 14px;
+    padding: 18px; margin-bottom: 28px;
+  }
+  textarea {
+    width: 100%; border: 1.5px solid var(--sand-deep); border-radius: 10px;
+    padding: 12px; font: inherit; font-size: 15px; resize: vertical;
+    min-height: 84px; background: var(--cream);
+  }
+  textarea:focus, input:focus { outline: 2px solid var(--teal); border-color: var(--teal); }
+  .row { display: flex; gap: 10px; margin-top: 10px; }
+  input#nickname {
+    flex: 1; min-width: 0; border: 1.5px solid var(--sand-deep); border-radius: 10px;
+    padding: 10px 12px; font: inherit; font-size: 14px; background: var(--cream);
+  }
+  button.submit {
+    border: 0; border-radius: 10px; padding: 10px 22px;
+    background: var(--teal-deep); color: #fff; font: inherit; font-size: 15px;
+    font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  button.submit:disabled { background: var(--sand-deep); cursor: default; }
+  .counter { font-size: 12px; color: var(--ink-soft); text-align: right; margin-top: 6px; }
+  .notice {
+    background: var(--sand); border-radius: 10px; padding: 12px 14px;
+    font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 28px;
+  }
+  .notice.error { color: #8a4a3a; background: #f6e3dc; }
+
+  .list-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .list-head h2 { font-size: 17px; font-weight: 800; }
+  .list-head span { font-size: 13px; color: var(--ink-soft); }
+
+  ul#list { list-style: none; }
+  li.q {
+    background: #fff; border: 1px solid var(--sand-deep); border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 10px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  li.q .body { flex: 1; }
+  li.q .text { font-size: 15px; line-height: 1.6; word-break: break-word; }
+  li.q .meta { margin-top: 6px; font-size: 12px; color: var(--ink-soft); }
+  button.like {
+    flex-shrink: 0; border: 1.5px solid var(--sand-deep); background: var(--cream);
+    border-radius: 12px; padding: 8px 12px; font: inherit; font-size: 14px;
+    cursor: pointer; color: var(--ink); min-width: 62px;
+    transition: transform .12s ease;
+  }
+  button.like:active { transform: scale(1.12); }
+  button.like.liked { border-color: var(--teal); background: #E7EDFB; color: var(--teal-deep); font-weight: 700; }
+  button.del {
+    flex-shrink: 0; border: 1.5px solid var(--sand-deep); background: var(--cream);
+    border-radius: 12px; padding: 8px 10px; font: inherit; font-size: 13px;
+    cursor: pointer; color: var(--ink-soft);
+  }
+  button.del:hover { border-color: #C96F5A; color: #A84A36; }
+  .empty { text-align: center; color: var(--ink-soft); font-size: 14px; padding: 36px 0; }
+
+  footer { margin-top: 40px; text-align: center; font-size: 12px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">2026. 7. 24. 서울시민대학 다시가는캠퍼스</p>
+    <h1>권수연 대표님께<br>궁금한 점을 남겨주세요</h1>
+    <p>강연 중 언제든 질문을 남길 수 있어요. 공감(👍)이 많은 질문부터 Q&A 시간에 다룹니다.</p>
+  </header>
+
+  <div class="notice error" id="no-key" style="display:none;">
+    행사장 화면·안내물의 <b>QR코드로 접속</b>하면 질문을 남길 수 있어요.<br>지금은 다른 분들의 질문을 둘러볼 수 있습니다.
+  </div>
+
+  <form id="form">
+    <textarea id="body" maxlength="400" placeholder="질문을 입력해 주세요 (400자 이내)" required></textarea>
+    <div class="counter"><span id="count">0</span>/400</div>
+    <div class="row">
+      <input id="nickname" maxlength="20" placeholder="닉네임 (선택)">
+      <button class="submit" id="submit" type="submit">질문 남기기</button>
+    </div>
+  </form>
+
+  <div class="notice" id="status" style="display:none;"></div>
+
+  <div class="list-head">
+    <h2>올라온 질문</h2>
+    <span id="total"></span>
+  </div>
+  <ul id="list"></ul>
+  <div class="empty" id="empty">아직 질문이 없어요. 첫 질문의 주인공이 되어주세요!</div>
+
+  <footer>청년포트폴리오학교 1기 기획팀이 직접 만든 페이지입니다</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+  // ── 로컬 개발(file:// 또는 localhost)이면 로컬 스택, 배포 환경이면 원격(dashiga26) 사용 ──
+  const IS_LOCAL = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+  const SUPABASE_URL = IS_LOCAL
+    ? 'http://127.0.0.1:54321'
+    : 'https://tfhnfyllsujdiccyyled.supabase.co';
+  const SUPABASE_ANON_KEY = IS_LOCAL
+    ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
+    : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmaG5meWxsc3VqZGljY3l5bGVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNzQ1MTIsImV4cCI6MjA5OTg1MDUxMn0.Uyy4hRPlyiy7OgYSC7d62eTxQzSvTtw4BCZ3NqZqyWY';
+
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // 로컬 개발(file:// 포함)은 키 자동 적용 — 배포 환경은 QR의 ?k= 필수
+  const eventKey = new URLSearchParams(location.search).get('k') || (IS_LOCAL ? 'dsg2470' : '');
+  const liked = new Set(JSON.parse(localStorage.getItem('qna_liked') || '[]'));
+  // 브라우저별 익명 토큰 — 본인이 등록한 질문만 삭제 가능 (서버에는 해시로 저장됨)
+  let token = localStorage.getItem('qna_token');
+  if (!token) { token = crypto.randomUUID().replace(/-/g, ''); localStorage.setItem('qna_token', token); }
+  const mine = new Set(JSON.parse(localStorage.getItem('qna_mine') || '[]'));
+
+  const $ = id => document.getElementById(id);
+  if (!eventKey) { $('no-key').style.display = 'block'; $('form').style.display = 'none'; }
+
+  $('body').addEventListener('input', () => { $('count').textContent = $('body').value.length; });
+
+  function esc(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function timeAgo(iso) {
+    const m = Math.floor((Date.now() - new Date(iso)) / 60000);
+    if (m < 1) return '방금'; if (m < 60) return `${m}분 전`;
+    return `${Math.floor(m / 60)}시간 전`;
+  }
+
+  async function load() {
+    const { data, error } = await db.from('questions')
+      .select('id, nickname, body, likes, created_at')
+      .order('likes', { ascending: false })
+      .order('created_at', { ascending: false });
+    if (error) return;
+    $('empty').style.display = data.length ? 'none' : 'block';
+    $('total').textContent = data.length ? `${data.length}개` : '';
+    $('list').innerHTML = data.map(q => `
+      <li class="q">
+        <div class="body">
+          <div class="text">${esc(q.body)}</div>
+          <div class="meta">${esc(q.nickname) || '익명'} · ${timeAgo(q.created_at)}</div>
+        </div>
+        <button class="like ${liked.has(q.id) ? 'liked' : ''}" data-id="${q.id}">
+          👍 ${q.likes}
+        </button>${mine.has(q.id) ? `<button class="del" data-id="${q.id}">삭제</button>` : ''}
+      </li>`).join('');
+  }
+
+  $('list').addEventListener('click', async e => {
+    const del = e.target.closest('button.del');
+    if (del) {
+      if (!confirm('이 질문을 삭제할까요?')) return;
+      await db.rpc('delete_question', { p_id: del.dataset.id, p_token: token });
+      mine.delete(del.dataset.id);
+      localStorage.setItem('qna_mine', JSON.stringify([...mine]));
+      load();
+      return;
+    }
+    const btn = e.target.closest('button.like');
+    if (!btn || liked.has(btn.dataset.id)) return;
+    liked.add(btn.dataset.id);
+    localStorage.setItem('qna_liked', JSON.stringify([...liked]));
+    btn.classList.add('liked');
+    await db.rpc('like_question', { p_id: btn.dataset.id });
+    load();
+  });
+
+  $('form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = $('body').value.trim();
+    if (body.length < 2) return;
+    $('submit').disabled = true;
+    const { data, error } = await db.rpc('submit_question', {
+      p_nickname: $('nickname').value.trim(),
+      p_body: body,
+      p_key: eventKey,
+      p_token: token,
+    });
+    if (!error && data) {
+      mine.add(data);
+      localStorage.setItem('qna_mine', JSON.stringify([...mine]));
+    }
+    const st = $('status');
+    st.style.display = 'block';
+    if (error) {
+      st.className = 'notice error';
+      st.textContent = '질문 등록에 실패했어요. QR로 다시 접속해 보시거나, 손을 들어 알려주세요!';
+      $('submit').disabled = false;
+    } else {
+      st.className = 'notice';
+      st.textContent = '질문이 등록되었어요. 감사합니다!';
+      $('body').value = ''; $('count').textContent = '0';
+      setTimeout(() => { st.style.display = 'none'; }, 3000);
+      setTimeout(() => { $('submit').disabled = false; }, 10000); // 연타 방지
+      load();
+    }
+  });
+
+  // 실시간 + 15초 폴링 (이중화)
+  db.channel('qna').on('postgres_changes', { event: '*', schema: 'public', table: 'questions' }, load).subscribe();
+  setInterval(load, 15000);
+  load();
+</script>
+</body>
+</html>
