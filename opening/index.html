@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 스테이지(1280px)가 로드 직후 뷰포트보다 넓어 모바일 크롬이 레이아웃 뷰포트를 확장하는 것을 차단 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 <title>내 인생의 주인공 되는 법 — 도입부 화면</title>
 <style>
   :root {
@@ -489,11 +490,15 @@
 
   // 창 크기에 맞춰 1280x720 스테이지 스케일 (비율 유지, 정방향).
   // 세로 화면에서는 가로폭 기준으로 꽉 채워짐 — 회전 방식은 실기기(Z Flip)에서 불편해 폐기.
+  // innerWidth는 모바일에서 시각적 뷰포트(줌 상태)를 반영해 신뢰 불가 → 레이아웃 뷰포트인 clientWidth 사용.
   function fit() {
-    const s = Math.min(innerWidth / 1280, innerHeight / 720);
+    const w = document.documentElement.clientWidth;
+    const h = document.documentElement.clientHeight;
+    const s = Math.min(w / 1280, h / 720);
     document.getElementById('stage').style.transform = `translate(-50%, -50%) scale(${s})`;
   }
   addEventListener('resize', fit);
+  addEventListener('orientationchange', fit);
   fit();
 
   // 터치 스와이프로 넘기기 (탭 = 다음은 click 핸들러가 처리)
