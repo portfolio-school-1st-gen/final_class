@@ -487,15 +487,11 @@
   document.getElementById('stage').addEventListener('click', () => go(cur + 1));
   document.getElementById('help').addEventListener('click', e => e.currentTarget.classList.remove('show'));
 
-  // 창 크기에 맞춰 1280x720 스테이지 스케일.
-  // 세로 화면(모바일 검토)에서는 90° 회전시켜 화면을 채운다 — 회전 잠금 상태에서도 크게 보임.
+  // 창 크기에 맞춰 1280x720 스테이지 스케일 (비율 유지, 정방향).
+  // 세로 화면에서는 가로폭 기준으로 꽉 채워짐 — 회전 방식은 실기기(Z Flip)에서 불편해 폐기.
   function fit() {
-    const portrait = innerHeight > innerWidth;
-    const s = portrait
-      ? Math.min(innerWidth / 720, innerHeight / 1280)
-      : Math.min(innerWidth / 1280, innerHeight / 720);
-    document.getElementById('stage').style.transform =
-      `translate(-50%, -50%) scale(${s})${portrait ? ' rotate(90deg)' : ''}`;
+    const s = Math.min(innerWidth / 1280, innerHeight / 720);
+    document.getElementById('stage').style.transform = `translate(-50%, -50%) scale(${s})`;
   }
   addEventListener('resize', fit);
   fit();
