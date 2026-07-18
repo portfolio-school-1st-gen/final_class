@@ -42,6 +42,10 @@
     min-height: 84px; background: var(--cream);
   }
   textarea:focus, input:focus { outline: 2px solid var(--teal); border-color: var(--teal); }
+
+  /* 프로젝터 송출용 블랙아웃 (클로징 멘트 등 화면 끌 때) */
+  #blackout { position: fixed; inset: 0; z-index: 999; background: #000; display: none; }
+  #blackout.show { display: block; }
   .row { display: flex; gap: 10px; margin-top: 10px; }
   input#nickname {
     flex: 1; min-width: 0; border: 1.5px solid var(--sand-deep); border-radius: 10px;
@@ -124,6 +128,22 @@
 
   <footer>청년포트폴리오학교 1기 기획팀이 직접 만든 페이지입니다</footer>
 </div>
+
+<div id="blackout"></div>
+
+<script>
+  // 프로젝터 송출용 블랙아웃: B 또는 . 토글, Esc 복귀 (슬라이드와 동일 키, 한/영 무관하게 e.code 판정).
+  // 참가자가 폼에 입력 중일 때는 무시. Supabase 로드 실패와 무관하게 동작하도록 독립 블록.
+  (() => {
+    const blackout = document.getElementById('blackout');
+    document.addEventListener('keydown', e => {
+      if (e.target && e.target.matches && e.target.matches('input, textarea')) return;
+      if (e.code === 'KeyB' || e.code === 'Period') blackout.classList.toggle('show');
+      else if (e.key === 'Escape') blackout.classList.remove('show');
+    });
+    blackout.addEventListener('click', () => blackout.classList.remove('show'));
+  })();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
