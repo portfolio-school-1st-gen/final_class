@@ -45,17 +45,8 @@
   }
   .slide.active { opacity: 1; visibility: visible; }
 
-  /* ── 공통 장식 ── */
-  .curve {
-    position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
-    border: 2.5px solid var(--violet);
-    background: linear-gradient(135deg, rgba(101,104,175,.10), transparent 55%);
-  }
-  .curve.stroke { background: none; }
-  .blob-lav {
-    position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
-    background: radial-gradient(circle, rgba(101,104,175,.16), transparent 65%);
-  }
+  /* ── 공통 장식 — 시안 pptx에서 추출한 원본 곡선 에셋 (deco_v/deco_w: 그라디언트 곡선, deco_ring: 사분원 호) ── */
+  .deco { position: absolute; pointer-events: none; z-index: 0; }
   .bar-bottom {
     position: absolute; left: 0; right: 0; bottom: 0; height: 34px;
     background: var(--violet); z-index: 3;
@@ -69,35 +60,43 @@
     box-shadow: 0 4px 12px rgba(101,104,175,.35);
   }
   em { font-style: normal; color: var(--violet); }
-  .slide > *:not(.curve):not(.blob-lav):not(.bar-bottom):not(.tab) { position: relative; z-index: 2; }
+  .slide > *:not(.deco):not(.bar-bottom):not(.tab) { position: relative; z-index: 2; }
 
   /* ═══ S0 표지 / 대기 화면 ═══ */
+  /* 테두리는 좌·상·우 3면만 — 하단은 보라 밴드가 네 번째 변 역할 (시안 동일) */
   #s0 .frame {
-    position: absolute; inset: 18px 18px 40px; z-index: 1;
-    border: 3px solid var(--violet); border-radius: 16px; pointer-events: none;
+    position: absolute; inset: 20px 20px 0; z-index: 1;
+    border: 3px solid var(--violet); border-bottom: none;
+    border-radius: 14px 14px 0 0; pointer-events: none;
   }
-  #s0 .logo-sms { position: absolute; top: 46px; left: 56px; height: 24px; }
-  #s0 .logo-right { position: absolute; top: 44px; right: 56px; display: flex; align-items: center; gap: 20px; }
-  #s0 .logo-right img { height: 28px; }
-  #s0 .left { position: absolute; left: 88px; top: 120px; }
+  #s0 .logo-sms { position: absolute; top: 30px; left: 37px; height: 26px; }
+  #s0 .logo-right { position: absolute; top: 40px; right: 42px; display: flex; align-items: center; gap: 16px; }
+  #s0 .logo-right .lg1 { height: 35px; }
+  #s0 .logo-right .lg2 { height: 27px; }
+  #s0 .left { position: absolute; left: 120px; top: 100px; }
   #s0 .badge {
     display: inline-block; background: var(--violet); color: #fff;
-    border-radius: 7px; padding: 8px 16px; font-size: 18px; font-weight: 800;
+    border-radius: 7px; padding: 7px 15px; font-size: 17px; font-weight: 800;
   }
-  #s0 .badge-sub { margin-top: 10px; color: var(--violet); font-size: 20px; font-weight: 800; }
-  #s0 .lead { margin-top: 36px; font-size: 26px; font-weight: 700; color: var(--ink); }
-  #s0 h1 { margin-top: 10px; font-size: 62px; line-height: 1.28; font-weight: 900; color: var(--ink); }
+  #s0 .badge-sub { margin-top: 8px; color: var(--violet); font-size: 19px; font-weight: 800; }
+  #s0 .lead { margin-top: 40px; font-size: 25px; font-weight: 700; color: var(--ink); }
+  #s0 h1 { margin-top: 8px; font-size: 64px; line-height: 1.32; font-weight: 900; color: var(--ink); }
   #s0 h1 em { font-weight: 900; }
-  #s0 .place { margin-top: 42px; font-size: 20px; line-height: 1.6; font-weight: 600; color: var(--ink); }
-  #s0 .place b { display: block; margin-top: 10px; font-size: 23px; font-weight: 800; }
-  #s0 .photo { position: absolute; right: 60px; bottom: 34px; height: 548px; z-index: 2; }
-  #s0 .qr { position: absolute; right: 344px; top: 316px; width: 148px; z-index: 2; border: 1px solid #eee; }
+  #s0 .place { margin-top: 36px; font-size: 20px; line-height: 1.55; font-weight: 600; color: var(--ink); }
+  #s0 .place b { display: block; margin-top: 14px; font-size: 22px; font-weight: 800; }
+  /* 시안: 전신 사진을 크게 배치하고 하단이 슬라이드 밖으로 잘려 바스트샷처럼 보이는 구조 */
+  #s0 .photo { position: absolute; right: 8px; top: 127px; height: 810px; z-index: 2; }
+  #s0 .qr { position: absolute; right: 287px; top: 306px; width: 143px; z-index: 3; }
   #s0 .qr-label {
-    position: absolute; right: 452px; top: 352px; z-index: 3;
+    position: absolute; right: 428px; top: 338px; z-index: 3;
     background: #111; color: #fff; padding: 7px 16px;
     font-size: 16px; font-weight: 700; transform: rotate(-8deg);
   }
-  #s0 .who { position: absolute; right: 320px; bottom: 96px; width: 330px; z-index: 3; text-align: left; }
+  #s0 .who { position: absolute; left: 714px; top: 505px; width: 430px; z-index: 3; text-align: left; }
+  #s0 .who::before {
+    content: ""; position: absolute; inset: -18px -34px; z-index: -1;
+    background: radial-gradient(ellipse, rgba(255,255,255,.96) 45%, rgba(255,255,255,0) 75%);
+  }
   #s0 .who .nm {
     display: inline-block; position: relative; padding: 4px 14px;
     font-size: 21px; font-weight: 800; color: var(--ink);
@@ -143,14 +142,15 @@
   }
   #s2 .role { margin-top: 26px; font-size: 24px; font-weight: 800; color: var(--violet); }
   #s2 ul { list-style: none; margin-top: 34px; }
-  #s2 li { position: relative; padding-left: 40px; margin-bottom: 30px; font-size: 20px; font-weight: 600; color: var(--ink); }
-  #s2 li .dot { position: absolute; left: 0; top: 4px; width: 17px; height: 17px; border-radius: 50%; background: var(--violet); }
+  #s2 li { position: relative; padding-left: 48px; margin-bottom: 30px; font-size: 20px; font-weight: 600; color: var(--ink); }
+  #s2 li .dot { position: absolute; left: 8px; top: 5px; width: 17px; height: 17px; border-radius: 50%; background: var(--violet); }
+  #s2 li:first-child .dot { left: 0; top: -3px; width: 33px; height: 33px; } /* 시안: 첫 불릿만 크게 */
   #s2 li:not(:last-child)::after {
-    content: ""; position: absolute; left: 7px; top: 26px; height: 32px;
+    content: ""; position: absolute; left: 15px; top: 30px; height: 30px;
     border-left: 2.5px dotted #A9ACD9;
   }
-  #s2 .photo { position: absolute; right: 46px; bottom: 34px; height: 470px; z-index: 1; }
-  #s2 .forbes { position: absolute; right: 56px; top: 40px; width: 170px; z-index: 2; }
+  #s2 .photo { position: absolute; left: 784px; bottom: 34px; width: 412px; z-index: 1; }
+  #s2 .forbes { position: absolute; left: 1038px; top: 66px; width: 183px; z-index: 2; transform: rotate(8.2deg); } /* 시안 rot=8.2° */
   #s2 .quote {
     position: absolute; right: 52px; bottom: 62px; width: 470px; z-index: 3;
     background: rgba(255,255,255,.92); border-radius: 12px; padding: 16px 22px;
@@ -230,13 +230,15 @@
 
   <!-- ═══ S0 — 표지 / 대기 화면 (18:30~19:00) ═══ -->
   <section class="slide active" id="s0">
-    <div class="curve stroke" style="left: -560px; top: -290px; width: 1280px; height: 1280px; border-width: 2px;"></div>
-    <div class="blob-lav" style="left: -220px; bottom: -260px; width: 640px; height: 640px;"></div>
+    <!-- 시안 XML 좌표: image6 x=488 y=-51 rot=88.4° / x=496 y=510 rot=180° (÷1.5) -->
+    <img class="deco" src="assets/deco_ring.png" style="left: 325px; top: -34px; width: 383px; transform: rotate(88.4deg);">
+    <img class="deco" src="assets/deco_ring.png" style="left: 331px; top: 340px; width: 383px; transform: rotate(180deg);">
+    <img class="deco" src="assets/deco_w.png" style="left: -110px; top: 448px; width: 780px; transform: scaleX(-1);">
     <div class="frame"></div>
     <img class="logo-sms" src="assets/logo_sms.png" alt="Seoul My Soul">
     <div class="logo-right">
-      <img src="assets/logo_lifelong.png" alt="서울특별시평생교육진흥원">
-      <img src="assets/logo_citizens.png" alt="서울시민대학">
+      <img class="lg1" src="assets/logo_lifelong.png" alt="서울특별시평생교육진흥원">
+      <img class="lg2" src="assets/logo_citizens.png" alt="서울시민대학">
     </div>
     <div class="left">
       <span class="badge">청년 포트폴리오학교 1기</span>
@@ -259,7 +261,7 @@
   <!-- ═══ S1 — 이 특강이 만들어진 과정 ═══ -->
   <section class="slide" id="s1">
     <div class="tab">02</div>
-    <div class="curve stroke" style="left: -540px; bottom: -770px; width: 1000px; height: 1000px;"></div>
+    <img class="deco" src="assets/deco_w.png" style="left: -140px; top: 470px; width: 800px; transform: scaleX(-1);">
     <div class="wrap">
       <h2>이 특강은 <em>청년들이 직접</em> 만들었습니다</h2>
       <div class="timeline">
@@ -291,7 +293,7 @@
   <!-- ═══ S2 — 연사 소개 ═══ -->
   <section class="slide" id="s2">
     <div class="tab">03</div>
-    <div class="curve stroke" style="right: -420px; top: -560px; width: 900px; height: 900px;"></div>
+    <img class="deco" src="assets/deco_w.png" style="right: -220px; top: -150px; width: 660px; transform: rotate(180deg);">
     <div class="bio">
       <p class="name">권수연 <span class="nm">매치워크 대표</span></p>
       <p class="role">자기이해를 기반으로 '건강한 취업 준비'를 설계합니다</p>
@@ -310,7 +312,7 @@
   <!-- ═══ S3 — 오늘의 여정 ═══ -->
   <section class="slide" id="s3">
     <div class="tab">04</div>
-    <div class="curve stroke" style="right: -460px; top: -680px; width: 880px; height: 880px; border-width: 2px;"></div>
+    <img class="deco" src="assets/deco_w.png" style="right: -170px; top: -120px; width: 700px; transform: rotate(180deg);">
     <div class="wrap">
       <h2>오늘의 여정</h2>
       <div style="margin-top: 30px;">
@@ -349,8 +351,9 @@
 
   <!-- ═══ S4 — 전환 (연사 입장) ═══ -->
   <section class="slide" id="s4">
-    <div class="curve stroke" style="right: -480px; top: -640px; width: 1000px; height: 1000px; border-width: 2px;"></div>
-    <div class="curve stroke" style="left: -520px; bottom: -680px; width: 1000px; height: 1000px; border-width: 2px;"></div>
+    <img class="deco" src="assets/deco_w.png" style="right: -110px; top: -50px; width: 820px; transform: rotate(180deg);">
+    <img class="deco" src="assets/deco_w.png" style="left: -140px; top: 430px; width: 820px; transform: scaleX(-1);">
+    <img class="deco" src="assets/deco_ring.png" style="left: 949px; top: 392px; width: 383px; transform: rotate(180deg);">
     <p class="l1"><span class="hl">10년차 라이프 디자이너,</span></p>
     <p class="l2"><em>매치워크 권수연 대표</em>의 포트폴리오 스토리</p>
     <p class="l3">지금부터 시작합니다!</p>
